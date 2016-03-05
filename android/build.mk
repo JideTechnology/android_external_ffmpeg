@@ -12,35 +12,8 @@ ifndef FFDROID_DIR
 FFDROID_DIR := $(call my-dir)
 endif
 
-define RESET
-$(1) :=
-$(1)-yes :=
-endef
-
-FF_VARS := FFLIBS OBJS ARMV5TE-OBJS ARMV6-OBJS VFP-OBJS NEON-OBJS MIPSFPU-OBJS MIPS32R2-OBJS MIPSDSPR1-OBJS MIPSDSPR2-OBJS ALTIVEC-OBJS VIS-OBJS MMX-OBJS YASM-OBJS
-
-FFMPEG_ARCH := $(TARGET_ARCH)
-
-FFMPEG_2ND_ARCH := false
-ifneq ($(TARGET_2ND_ARCH_VARIANT),)
-   ifeq ($(TARGET_PREFER_32_BIT_APPS),true)
-       ifeq ($(FFMPEG_MULTILIB),64)
-          FFMPEG_2ND_ARCH := true
-       endif
-   else
-       ifeq ($(FFMPEG_MULTILIB),32)
-          FFMPEG_2ND_ARCH := true
-       endif
-   endif
-endif
-
-ifeq ($(FFMPEG_2ND_ARCH), true)
-    FFMPEG_ARCH := $(TARGET_2ND_ARCH)
-endif
-
-ifeq ($(FFMPEG_ARCH),arm64)
-    FFMPEG_ARCH := aarch64
-endif
+include $(CLEAR_VARS)
+include $(FFDROID_DIR)/ffmpeg.mk
 
 FFMPEG_ARCH_DIR := $(FFMPEG_ARCH)
 ifeq ($(FFMPEG_ARCH),x86_64)
@@ -50,8 +23,6 @@ endif
 $(foreach V,$(FF_VARS),$(eval $(call RESET,$(V))))
 #$(warning INCLUDING $(wildcard $(LOCAL_PATH)/$(FFMPEG_ARCH)/Makefile) for $(FFMPEG_2ND_ARCH) - $(NEON-OBJS) - $(FF_VARS))
 
-include $(CLEAR_VARS)
-include $(FFDROID_DIR)/ffmpeg.mk
 SUBDIR := $(FFDROID_DIR)/include/
 include $(LOCAL_PATH)/Makefile $(wildcard $(LOCAL_PATH)/$(FFMPEG_ARCH_DIR)/Makefile)
 include $(FFMPEG_DIR)arch.mak

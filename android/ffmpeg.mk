@@ -12,6 +12,36 @@ ifndef FFMPEG_DIR
 FFMPEG_DIR := $(dir $(call my-dir))
 endif
 
+define RESET
+$(1) :=
+$(1)-yes :=
+endef
+
+FF_VARS := FFLIBS OBJS ARMV5TE-OBJS ARMV6-OBJS VFP-OBJS NEON-OBJS MIPSFPU-OBJS MIPS32R2-OBJS MIPSDSPR1-OBJS MIPSDSPR2-OBJS ALTIVEC-OBJS VIS-OBJS MMX-OBJS YASM-OBJS
+
+FFMPEG_ARCH := $(TARGET_ARCH)
+
+FFMPEG_2ND_ARCH := false
+ifneq ($(TARGET_2ND_ARCH_VARIANT),)
+   ifeq ($(TARGET_PREFER_32_BIT_APPS),true)
+       ifeq ($(FFMPEG_MULTILIB),64)
+          FFMPEG_2ND_ARCH := true
+       endif
+   else
+       ifeq ($(FFMPEG_MULTILIB),32)
+          FFMPEG_2ND_ARCH := true
+       endif
+   endif
+endif
+
+ifeq ($(FFMPEG_2ND_ARCH), true)
+    FFMPEG_ARCH := $(TARGET_2ND_ARCH)
+endif
+
+ifeq ($(FFMPEG_ARCH),arm64)
+    FFMPEG_ARCH := aarch64
+endif
+
 FFMPEG_ARCH_VARIANT := $(TARGET_ARCH_VARIANT)
 ifeq ($(FFMPEG_2ND_ARCH), true)
    FFMPEG_ARCH_VARIANT := $(TARGET_2ND_ARCH_VARIANT)
