@@ -1,1 +1,1 @@
-config-x86.mak
+config-x86-x86.mak

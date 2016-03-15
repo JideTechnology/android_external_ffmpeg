@@ -1,1 +1,1 @@
-config-x86_64.h
+config-x86_64-x86_64.h

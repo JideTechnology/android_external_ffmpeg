@@ -1,1 +1,1 @@
-config-x86.h
+config-x86-x86.h
